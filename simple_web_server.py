@@ -5,13 +5,6 @@ app = Flask(__name__)
 @app.route('/')
 def main_page():
 
-  print request
-  for key in request.__dict__:
-    print key, request.__dict__[key]
-
-  print 'request args'
-  print request.args
-
   special_word = request.args.get('firstname', '')
 
   web_page = '''
@@ -24,14 +17,61 @@ def main_page():
 
   <p>My first paragraph.</p>
 
-  <form>
+  <div>
     First name:<br>
-    <input type="text" name="firstname" value="{1}"><br>
-    <input type="submit" value="Submit">
-  </form>
+    <input type="text" id="inp1" name="firstname" value="nothing"><br>
+    <input type="submit" id="btn_submit" value="Submit">
+  </div>
 
   </body>
-  </html>'''.format(special_word, additional_functions.capitalize(special_word))
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+  <script>
+
+    $(function(){
+
+      $("#btn_submit").click(function() {
+
+        var name_from_edit_box = $("#inp1").val();
+
+        $.get("jesus", { firstname: name_from_edit_box }, function( data ) {
+          if (data == 'go_ahead') {
+            window.location.href = "/page2";
+          }
+        });
+      });
+    });
+
+  </script>
+
+  </html>'''
+
+  return web_page
+
+
+@app.route('/jesus')
+def target():
+  first_name = request.args.get('firstname', '')
+  print 'received', first_name
+  if request.args.get('firstname', '') == 'luba':
+    return 'go_ahead'
+  return 'stay_here'
+
+@app.route('/page2')
+def page2_page():
+
+  web_page = '''
+  <!DOCTYPE html>
+  <html>
+  <body>
+
+  <h1>Page 2</h1>
+
+  <p>My second paragraph.</p>
+
+  </body>
+  </html>'''
   return web_page
 
 if __name__ == '__main__':
